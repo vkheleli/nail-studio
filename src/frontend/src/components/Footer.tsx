@@ -6,22 +6,22 @@ import { useContactInfo } from "../hooks/useContactInfo";
 const socialLinks = [
   {
     label: "Instagram",
-    href: "https://instagram.com/auroranails",
+    href: "https://instagram.com/majesticnailsbar",
     Icon: SiInstagram,
   },
   {
     label: "Facebook",
-    href: "https://facebook.com/auroranails",
+    href: "https://facebook.com/majesticnailsbar",
     Icon: SiFacebook,
   },
   {
     label: "Pinterest",
-    href: "https://pinterest.com/auroranails",
+    href: "https://pinterest.com/majesticnailsbar",
     Icon: SiPinterest,
   },
   {
     label: "TikTok",
-    href: "https://tiktok.com/@auroranails",
+    href: "https://tiktok.com/@majesticnailsbar",
     Icon: SiTiktok,
   },
 ];
@@ -29,11 +29,10 @@ const socialLinks = [
 export function Footer() {
   const { data: contactInfo } = useContactInfo();
 
-  const phone = contactInfo?.phone ?? "+1 (555) 234-5678";
-  const email = contactInfo?.email ?? "hello@auroranails.com";
+  const phone = contactInfo?.phone ?? "+27 72 000 0000";
+  const email = contactInfo?.email ?? "hello@majesticnailsbar.co.za";
   const address =
-    contactInfo?.address ??
-    "2255 Blossom Avenue, Suite 12, Los Angeles, CA 90028";
+    contactInfo?.address ?? "Multiple locations: Soweto · Vaal · Ficksburg";
   const hours = contactInfo?.hours ?? "Tue–Sat: 9am–7pm · Sun: 10am–5pm";
 
   return (
@@ -46,11 +45,11 @@ export function Footer() {
           {/* Brand column */}
           <div className="space-y-4">
             <h3 className="font-display text-xl font-semibold tracking-wide">
-              Aurora Nails
+              Majestic Beauty & Nails Bar
             </h3>
             <p className="text-primary-foreground/80 text-sm leading-relaxed max-w-xs">
               Artistry on your fingertips. Premium nail services crafted with
-              love and precision.
+              love and precision across Soweto, Vaal, and Ficksburg.
             </p>
             <div className="flex items-center gap-3 pt-1">
               {socialLinks.map(({ label, href, Icon }) => (
@@ -130,7 +129,10 @@ export function Footer() {
         <Separator className="my-8 bg-primary-foreground/20" />
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-primary-foreground/60">
-          <p>© {new Date().getFullYear()} Aurora Nails. All rights reserved.</p>
+          <p>
+            © {new Date().getFullYear()} Majestic Beauty & Nails Bar. All rights
+            reserved.
+          </p>
           <p className="flex items-center gap-1">
             Built with{" "}
             <Heart className="w-3 h-3 fill-current text-primary-foreground/80" />{" "}

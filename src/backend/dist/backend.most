@@ -1,4 +1,26 @@
 // Version: 1.0.0
+type BookingId__429964979 = Nat;
+type BookingStatus__866642965 =
+  {#Cancelled; #Completed; #Confirmed; #Pending; #Rescheduled};
+type Booking__1057793126 =
+  {
+    adminNotes : ?Text;
+    cancellationReason : ?Text;
+    confirmedDate : ?Text;
+    confirmedTime : ?Text;
+    createdAt : Timestamp__301639476;
+    customerName : Text;
+    customerPhone : Text;
+    id : BookingId__429964979;
+    notes : ?Text;
+    requestedDate : Text;
+    requestedTime : Text;
+    serviceType : Text;
+    status : BookingStatus__866642965;
+    techId : TechId__931575182;
+    techName : Text;
+    updatedAt : Timestamp__301639476
+  };
 type ContactInfo__323631635 =
   {
     address : Text;
@@ -28,6 +50,14 @@ type Map__297112838<K, V> =
   {var root : Node__46230540<K, V>; var size : Nat__490723111};
 type Map__605269027<K, V> = Map__158565046<K, V>;
 type MessageId__291319400 = Nat;
+type NailTech__1043297892 =
+  {
+    address : Text;
+    id : TechId__931575182;
+    name : Text;
+    specialties : [Text];
+    town : Text
+  };
 type Nat__490723111 = Nat__920180692;
 type Nat__920180692 = Nat;
 type Node__46230540<K, V> =
@@ -48,6 +78,7 @@ type ServiceType__390865354 =
     name : Text;
     slug : Text
   };
+type TechId__931575182 = Nat;
 type Timestamp__301639476 = Int;
 type UserRole__1054455867 = {#admin; #guest; #user};
 actor {
@@ -55,6 +86,12 @@ actor {
     {
       var adminAssigned : Bool;
       userRoles : Map__605269027<Principal, UserRole__1054455867>
+    };
+  stable bookings :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?Booking__1057793126]];
+      var elementIndex : Nat__490723111
     };
   stable contactInfoHolder :
     {
@@ -74,6 +111,13 @@ actor {
       var blocks : [var [var ?PortfolioImage__808336274]];
       var elementIndex : Nat__490723111
     };
+  stable nailTechs :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?NailTech__1043297892]];
+      var elementIndex : Nat__490723111
+    };
+  stable nextBookingId : {var value : Nat};
   stable serviceTypes :
     {
       var blockIndex : Nat__490723111;

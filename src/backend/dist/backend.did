@@ -18,6 +18,7 @@ type UserRole =
    user;
  };
 type Timestamp = int;
+type TechId = nat;
 type ServiceTypeId = nat;
 type ServiceType = 
  record {
@@ -25,6 +26,13 @@ type ServiceType =
    id: ServiceTypeId;
    name: text;
    slug: text;
+ };
+type RescheduleRequest = 
+ record {
+   adminNotes: opt text;
+   bookingId: BookingId;
+   newDate: text;
+   newTime: text;
  };
 type PortfolioImage = 
  record {
@@ -34,9 +42,27 @@ type PortfolioImage =
    serviceTypeId: ServiceTypeId;
    title: text;
  };
+type NailTech = 
+ record {
+   address: text;
+   id: TechId;
+   name: text;
+   specialties: vec text;
+   town: text;
+ };
 type MessageId = nat;
 type ImageId = nat;
 type ExternalBlob = blob;
+type CreateBookingRequest = 
+ record {
+   customerName: text;
+   customerPhone: text;
+   notes: opt text;
+   requestedDate: text;
+   requestedTime: text;
+   serviceType: text;
+   techId: TechId;
+ };
 type ContactMessage = 
  record {
    createdAt: Timestamp;
@@ -54,6 +80,34 @@ type ContactInfo =
    hours: text;
    phone: text;
  };
+type BookingView = 
+ record {
+   adminNotes: opt text;
+   cancellationReason: opt text;
+   confirmedDate: opt text;
+   confirmedTime: opt text;
+   createdAt: Timestamp;
+   customerName: text;
+   customerPhone: text;
+   id: BookingId;
+   notes: opt text;
+   requestedDate: text;
+   requestedTime: text;
+   serviceType: text;
+   status: BookingStatus;
+   techId: TechId;
+   techName: text;
+   updatedAt: Timestamp;
+ };
+type BookingStatus = 
+ variant {
+   Cancelled;
+   Completed;
+   Confirmed;
+   Pending;
+   Rescheduled;
+ };
+type BookingId = nat;
 service : {
   _immutableObjectStorageBlobsAreLive: (hashes: vec blob) -> (vec bool) query;
   _immutableObjectStorageBlobsToDelete: () -> (vec blob) query;
@@ -69,19 +123,31 @@ service : {
    ExternalBlob) -> (PortfolioImage);
   addService: (name: text, description: text, slug: text) -> (ServiceType);
   assignCallerUserRole: (user: principal, role: UserRole) -> ();
+  cancelBooking: (bookingId: BookingId, reason: opt text) ->
+   (opt BookingView);
+  completeBooking: (bookingId: BookingId, adminNotes: opt text) ->
+   (opt BookingView);
+  confirmBooking: (bookingId: BookingId, adminNotes: opt text) ->
+   (opt BookingView);
   deleteGalleryItem: (id: ImageId) -> (bool);
   deleteService: (id: ServiceTypeId) -> (bool);
+  getBooking: (bookingId: BookingId) -> (opt BookingView) query;
   getCallerUserRole: () -> (UserRole) query;
   getContactInfo: () -> (ContactInfo) query;
   getGalleryItem: (id: ImageId) -> (opt PortfolioImage) query;
+  getNailTech: (techId: TechId) -> (opt NailTech) query;
   getService: (id: ServiceTypeId) -> (opt ServiceType) query;
   isCallerAdmin: () -> (bool) query;
+  listBookings: (statusFilter: opt BookingStatus) -> (vec BookingView) query;
   listContacts: () -> (vec ContactMessage);
   listGalleryItems: () -> (vec PortfolioImage) query;
   listGalleryItemsByService: (serviceTypeId: ServiceTypeId) ->
    (vec PortfolioImage) query;
+  listNailTechs: () -> (vec NailTech) query;
   listServices: () -> (vec ServiceType) query;
+  rescheduleBooking: (req: RescheduleRequest) -> (opt BookingView);
   setContactInfo: (info: ContactInfo) -> ();
+  submitBooking: (req: CreateBookingRequest) -> (BookingView);
   submitContact: (name: text, email: text, message: text, preferredService:
    text) -> (ContactMessage);
   updateService: (id: ServiceTypeId, name: text, description: text, slug:

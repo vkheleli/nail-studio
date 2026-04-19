@@ -41,12 +41,46 @@ export const UserRole = IDL.Variant({
   'user' : IDL.Null,
   'guest' : IDL.Null,
 });
+export const BookingId = IDL.Nat;
+export const BookingStatus = IDL.Variant({
+  'Rescheduled' : IDL.Null,
+  'Confirmed' : IDL.Null,
+  'Cancelled' : IDL.Null,
+  'Completed' : IDL.Null,
+  'Pending' : IDL.Null,
+});
+export const TechId = IDL.Nat;
+export const BookingView = IDL.Record({
+  'id' : BookingId,
+  'customerName' : IDL.Text,
+  'status' : BookingStatus,
+  'serviceType' : IDL.Text,
+  'customerPhone' : IDL.Text,
+  'cancellationReason' : IDL.Opt(IDL.Text),
+  'createdAt' : Timestamp,
+  'confirmedDate' : IDL.Opt(IDL.Text),
+  'confirmedTime' : IDL.Opt(IDL.Text),
+  'updatedAt' : Timestamp,
+  'notes' : IDL.Opt(IDL.Text),
+  'requestedDate' : IDL.Text,
+  'requestedTime' : IDL.Text,
+  'techId' : TechId,
+  'adminNotes' : IDL.Opt(IDL.Text),
+  'techName' : IDL.Text,
+});
 export const ContactInfo = IDL.Record({
   'hours' : IDL.Text,
   'email' : IDL.Text,
   'address' : IDL.Text,
   'phone' : IDL.Text,
   'bookingUrl' : IDL.Text,
+});
+export const NailTech = IDL.Record({
+  'id' : TechId,
+  'name' : IDL.Text,
+  'town' : IDL.Text,
+  'address' : IDL.Text,
+  'specialties' : IDL.Vec(IDL.Text),
 });
 export const MessageId = IDL.Nat;
 export const ContactMessage = IDL.Record({
@@ -56,6 +90,21 @@ export const ContactMessage = IDL.Record({
   'preferredService' : IDL.Text,
   'email' : IDL.Text,
   'message' : IDL.Text,
+});
+export const RescheduleRequest = IDL.Record({
+  'bookingId' : BookingId,
+  'adminNotes' : IDL.Opt(IDL.Text),
+  'newDate' : IDL.Text,
+  'newTime' : IDL.Text,
+});
+export const CreateBookingRequest = IDL.Record({
+  'customerName' : IDL.Text,
+  'serviceType' : IDL.Text,
+  'customerPhone' : IDL.Text,
+  'notes' : IDL.Opt(IDL.Text),
+  'requestedDate' : IDL.Text,
+  'requestedTime' : IDL.Text,
+  'techId' : TechId,
 });
 
 export const idlService = IDL.Service({
@@ -93,13 +142,35 @@ export const idlService = IDL.Service({
     ),
   'addService' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [ServiceType], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+  'cancelBooking' : IDL.Func(
+      [BookingId, IDL.Opt(IDL.Text)],
+      [IDL.Opt(BookingView)],
+      [],
+    ),
+  'completeBooking' : IDL.Func(
+      [BookingId, IDL.Opt(IDL.Text)],
+      [IDL.Opt(BookingView)],
+      [],
+    ),
+  'confirmBooking' : IDL.Func(
+      [BookingId, IDL.Opt(IDL.Text)],
+      [IDL.Opt(BookingView)],
+      [],
+    ),
   'deleteGalleryItem' : IDL.Func([ImageId], [IDL.Bool], []),
   'deleteService' : IDL.Func([ServiceTypeId], [IDL.Bool], []),
+  'getBooking' : IDL.Func([BookingId], [IDL.Opt(BookingView)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
   'getContactInfo' : IDL.Func([], [ContactInfo], ['query']),
   'getGalleryItem' : IDL.Func([ImageId], [IDL.Opt(PortfolioImage)], ['query']),
+  'getNailTech' : IDL.Func([TechId], [IDL.Opt(NailTech)], ['query']),
   'getService' : IDL.Func([ServiceTypeId], [IDL.Opt(ServiceType)], ['query']),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+  'listBookings' : IDL.Func(
+      [IDL.Opt(BookingStatus)],
+      [IDL.Vec(BookingView)],
+      ['query'],
+    ),
   'listContacts' : IDL.Func([], [IDL.Vec(ContactMessage)], []),
   'listGalleryItems' : IDL.Func([], [IDL.Vec(PortfolioImage)], ['query']),
   'listGalleryItemsByService' : IDL.Func(
@@ -107,8 +178,15 @@ export const idlService = IDL.Service({
       [IDL.Vec(PortfolioImage)],
       ['query'],
     ),
+  'listNailTechs' : IDL.Func([], [IDL.Vec(NailTech)], ['query']),
   'listServices' : IDL.Func([], [IDL.Vec(ServiceType)], ['query']),
+  'rescheduleBooking' : IDL.Func(
+      [RescheduleRequest],
+      [IDL.Opt(BookingView)],
+      [],
+    ),
   'setContactInfo' : IDL.Func([ContactInfo], [], []),
+  'submitBooking' : IDL.Func([CreateBookingRequest], [BookingView], []),
   'submitContact' : IDL.Func(
       [IDL.Text, IDL.Text, IDL.Text, IDL.Text],
       [ContactMessage],
@@ -157,12 +235,46 @@ export const idlFactory = ({ IDL }) => {
     'user' : IDL.Null,
     'guest' : IDL.Null,
   });
+  const BookingId = IDL.Nat;
+  const BookingStatus = IDL.Variant({
+    'Rescheduled' : IDL.Null,
+    'Confirmed' : IDL.Null,
+    'Cancelled' : IDL.Null,
+    'Completed' : IDL.Null,
+    'Pending' : IDL.Null,
+  });
+  const TechId = IDL.Nat;
+  const BookingView = IDL.Record({
+    'id' : BookingId,
+    'customerName' : IDL.Text,
+    'status' : BookingStatus,
+    'serviceType' : IDL.Text,
+    'customerPhone' : IDL.Text,
+    'cancellationReason' : IDL.Opt(IDL.Text),
+    'createdAt' : Timestamp,
+    'confirmedDate' : IDL.Opt(IDL.Text),
+    'confirmedTime' : IDL.Opt(IDL.Text),
+    'updatedAt' : Timestamp,
+    'notes' : IDL.Opt(IDL.Text),
+    'requestedDate' : IDL.Text,
+    'requestedTime' : IDL.Text,
+    'techId' : TechId,
+    'adminNotes' : IDL.Opt(IDL.Text),
+    'techName' : IDL.Text,
+  });
   const ContactInfo = IDL.Record({
     'hours' : IDL.Text,
     'email' : IDL.Text,
     'address' : IDL.Text,
     'phone' : IDL.Text,
     'bookingUrl' : IDL.Text,
+  });
+  const NailTech = IDL.Record({
+    'id' : TechId,
+    'name' : IDL.Text,
+    'town' : IDL.Text,
+    'address' : IDL.Text,
+    'specialties' : IDL.Vec(IDL.Text),
   });
   const MessageId = IDL.Nat;
   const ContactMessage = IDL.Record({
@@ -172,6 +284,21 @@ export const idlFactory = ({ IDL }) => {
     'preferredService' : IDL.Text,
     'email' : IDL.Text,
     'message' : IDL.Text,
+  });
+  const RescheduleRequest = IDL.Record({
+    'bookingId' : BookingId,
+    'adminNotes' : IDL.Opt(IDL.Text),
+    'newDate' : IDL.Text,
+    'newTime' : IDL.Text,
+  });
+  const CreateBookingRequest = IDL.Record({
+    'customerName' : IDL.Text,
+    'serviceType' : IDL.Text,
+    'customerPhone' : IDL.Text,
+    'notes' : IDL.Opt(IDL.Text),
+    'requestedDate' : IDL.Text,
+    'requestedTime' : IDL.Text,
+    'techId' : TechId,
   });
   
   return IDL.Service({
@@ -209,8 +336,24 @@ export const idlFactory = ({ IDL }) => {
       ),
     'addService' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [ServiceType], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+    'cancelBooking' : IDL.Func(
+        [BookingId, IDL.Opt(IDL.Text)],
+        [IDL.Opt(BookingView)],
+        [],
+      ),
+    'completeBooking' : IDL.Func(
+        [BookingId, IDL.Opt(IDL.Text)],
+        [IDL.Opt(BookingView)],
+        [],
+      ),
+    'confirmBooking' : IDL.Func(
+        [BookingId, IDL.Opt(IDL.Text)],
+        [IDL.Opt(BookingView)],
+        [],
+      ),
     'deleteGalleryItem' : IDL.Func([ImageId], [IDL.Bool], []),
     'deleteService' : IDL.Func([ServiceTypeId], [IDL.Bool], []),
+    'getBooking' : IDL.Func([BookingId], [IDL.Opt(BookingView)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
     'getContactInfo' : IDL.Func([], [ContactInfo], ['query']),
     'getGalleryItem' : IDL.Func(
@@ -218,8 +361,14 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Opt(PortfolioImage)],
         ['query'],
       ),
+    'getNailTech' : IDL.Func([TechId], [IDL.Opt(NailTech)], ['query']),
     'getService' : IDL.Func([ServiceTypeId], [IDL.Opt(ServiceType)], ['query']),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+    'listBookings' : IDL.Func(
+        [IDL.Opt(BookingStatus)],
+        [IDL.Vec(BookingView)],
+        ['query'],
+      ),
     'listContacts' : IDL.Func([], [IDL.Vec(ContactMessage)], []),
     'listGalleryItems' : IDL.Func([], [IDL.Vec(PortfolioImage)], ['query']),
     'listGalleryItemsByService' : IDL.Func(
@@ -227,8 +376,15 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(PortfolioImage)],
         ['query'],
       ),
+    'listNailTechs' : IDL.Func([], [IDL.Vec(NailTech)], ['query']),
     'listServices' : IDL.Func([], [IDL.Vec(ServiceType)], ['query']),
+    'rescheduleBooking' : IDL.Func(
+        [RescheduleRequest],
+        [IDL.Opt(BookingView)],
+        [],
+      ),
     'setContactInfo' : IDL.Func([ContactInfo], [], []),
+    'submitBooking' : IDL.Func([CreateBookingRequest], [BookingView], []),
     'submitContact' : IDL.Func(
         [IDL.Text, IDL.Text, IDL.Text, IDL.Text],
         [ContactMessage],

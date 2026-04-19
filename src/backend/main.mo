@@ -5,10 +5,13 @@ import MixinObjectStorage "mo:caffeineai-object-storage/Mixin";
 import ServicesTypes "types/services";
 import GalleryTypes "types/gallery";
 import ContactTypes "types/contact";
+import BookingsTypes "types/bookings";
 import ServicesLib "lib/services";
+import BookingsLib "lib/bookings";
 import ServicesMixin "mixins/services-api";
 import GalleryMixin "mixins/gallery-api";
 import ContactMixin "mixins/contact-api";
+import BookingsMixin "mixins/bookings-api";
 
 actor {
   // Authorization state
@@ -35,8 +38,17 @@ actor {
   });
   let contactMessages = List.empty<ContactTypes.ContactMessage>();
 
+  // Bookings state
+  let nailTechs = List.empty<BookingsTypes.NailTech>();
+  let bookings = List.empty<BookingsTypes.Booking>();
+  let nextBookingId = { var value : Nat = 0 };
+
+  // Seed nail techs on first deploy
+  BookingsLib.seedNailTechs(nailTechs);
+
   // Include domain mixins
   include ServicesMixin(accessControlState, serviceTypes);
   include GalleryMixin(accessControlState, images);
   include ContactMixin(accessControlState, contactInfoHolder, contactMessages);
+  include BookingsMixin(accessControlState, bookings, nailTechs, nextBookingId);
 };

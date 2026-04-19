@@ -10,6 +10,30 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export type BookingId = bigint;
+export type BookingStatus = { 'Rescheduled' : null } |
+  { 'Confirmed' : null } |
+  { 'Cancelled' : null } |
+  { 'Completed' : null } |
+  { 'Pending' : null };
+export interface BookingView {
+  'id' : BookingId,
+  'customerName' : string,
+  'status' : BookingStatus,
+  'serviceType' : string,
+  'customerPhone' : string,
+  'cancellationReason' : [] | [string],
+  'createdAt' : Timestamp,
+  'confirmedDate' : [] | [string],
+  'confirmedTime' : [] | [string],
+  'updatedAt' : Timestamp,
+  'notes' : [] | [string],
+  'requestedDate' : string,
+  'requestedTime' : string,
+  'techId' : TechId,
+  'adminNotes' : [] | [string],
+  'techName' : string,
+}
 export interface ContactInfo {
   'hours' : string,
   'email' : string,
@@ -25,15 +49,37 @@ export interface ContactMessage {
   'email' : string,
   'message' : string,
 }
+export interface CreateBookingRequest {
+  'customerName' : string,
+  'serviceType' : string,
+  'customerPhone' : string,
+  'notes' : [] | [string],
+  'requestedDate' : string,
+  'requestedTime' : string,
+  'techId' : TechId,
+}
 export type ExternalBlob = Uint8Array;
 export type ImageId = bigint;
 export type MessageId = bigint;
+export interface NailTech {
+  'id' : TechId,
+  'name' : string,
+  'town' : string,
+  'address' : string,
+  'specialties' : Array<string>,
+}
 export interface PortfolioImage {
   'id' : ImageId,
   'title' : string,
   'createdAt' : Timestamp,
   'image' : ExternalBlob,
   'serviceTypeId' : ServiceTypeId,
+}
+export interface RescheduleRequest {
+  'bookingId' : BookingId,
+  'adminNotes' : [] | [string],
+  'newDate' : string,
+  'newTime' : string,
 }
 export interface ServiceType {
   'id' : ServiceTypeId,
@@ -42,6 +88,7 @@ export interface ServiceType {
   'description' : string,
 }
 export type ServiceTypeId = bigint;
+export type TechId = bigint;
 export type Timestamp = bigint;
 export type UserRole = { 'admin' : null } |
   { 'user' : null } |
@@ -83,21 +130,36 @@ export interface _SERVICE {
   >,
   'addService' : ActorMethod<[string, string, string], ServiceType>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
+  'cancelBooking' : ActorMethod<[BookingId, [] | [string]], [] | [BookingView]>,
+  'completeBooking' : ActorMethod<
+    [BookingId, [] | [string]],
+    [] | [BookingView]
+  >,
+  'confirmBooking' : ActorMethod<
+    [BookingId, [] | [string]],
+    [] | [BookingView]
+  >,
   'deleteGalleryItem' : ActorMethod<[ImageId], boolean>,
   'deleteService' : ActorMethod<[ServiceTypeId], boolean>,
+  'getBooking' : ActorMethod<[BookingId], [] | [BookingView]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getContactInfo' : ActorMethod<[], ContactInfo>,
   'getGalleryItem' : ActorMethod<[ImageId], [] | [PortfolioImage]>,
+  'getNailTech' : ActorMethod<[TechId], [] | [NailTech]>,
   'getService' : ActorMethod<[ServiceTypeId], [] | [ServiceType]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
+  'listBookings' : ActorMethod<[[] | [BookingStatus]], Array<BookingView>>,
   'listContacts' : ActorMethod<[], Array<ContactMessage>>,
   'listGalleryItems' : ActorMethod<[], Array<PortfolioImage>>,
   'listGalleryItemsByService' : ActorMethod<
     [ServiceTypeId],
     Array<PortfolioImage>
   >,
+  'listNailTechs' : ActorMethod<[], Array<NailTech>>,
   'listServices' : ActorMethod<[], Array<ServiceType>>,
+  'rescheduleBooking' : ActorMethod<[RescheduleRequest], [] | [BookingView]>,
   'setContactInfo' : ActorMethod<[ContactInfo], undefined>,
+  'submitBooking' : ActorMethod<[CreateBookingRequest], BookingView>,
   'submitContact' : ActorMethod<
     [string, string, string, string],
     ContactMessage

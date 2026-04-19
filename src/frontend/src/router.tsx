@@ -5,6 +5,7 @@ import { rootRoute } from "./routes/__root";
 
 const HomePage = lazy(() => import("./pages/Home"));
 const AdminPage = lazy(() => import("./pages/Admin"));
+const NailTechsPage = lazy(() => import("./pages/NailTechs"));
 
 const PageLoader = () => (
   <div className="flex flex-col gap-4 p-8 max-w-4xl mx-auto">
@@ -37,7 +38,21 @@ const adminRoute = createRoute({
   ),
 });
 
-const routeTree = rootRoute.addChildren([homeRoute, adminRoute]);
+const nailTechsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/nail-techs",
+  component: () => (
+    <Suspense fallback={<PageLoader />}>
+      <NailTechsPage />
+    </Suspense>
+  ),
+});
+
+const routeTree = rootRoute.addChildren([
+  homeRoute,
+  adminRoute,
+  nailTechsRoute,
+]);
 
 export const router = createRouter({ routeTree });
 

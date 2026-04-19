@@ -25,6 +25,8 @@ Sophisticated, meticulous, trustworthy. Editorial, not trendy. High-confidence c
 - **Hero**: Full-width curated image with `surface-elevated` shadow, soft focus treatment.
 - **Service Cards**: Horizontal scrolling, `bg-card`, `surface-card` shadow, soft `rounded-lg`, padding-dense.
 - **Gallery**: Responsive grid (3 cols desktop, 2 tablet, 1 mobile), card-based, hover scale, `surface-card` shadow.
+- **Nail Techs Grid**: Responsive card grid (1 col mobile, 2 tablet, 3 desktop), `bg-card`, `surface-card` shadow, with name/location/specialties. "Book Now" button with shimmer accent CTA.
+- **Booking Form Modal**: Overlay modal, `bg-card`, form inputs with `border-input`, focus `ring-1 ring-ring`. Date picker (no past dates), time picker, customer name, phone, service selector. Submit button primary-color with shimmer.
 - **Contact Footer**: `bg-secondary` or alternating `bg-muted/20`, `border-t`, address/phone/social stacked.
 
 ## Spacing & Rhythm

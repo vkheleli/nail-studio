@@ -1,5 +1,6 @@
 import type { ServiceType, PortfolioImage, ContactMessage, ContactInfo } from "../backend";
 import { ExternalBlob, UserRole } from "../backend";
+import type { BookingView } from "../hooks/useBookings";
 
 const sampleServices: ServiceType[] = [
   { id: BigInt(1), name: "Gel Nails", slug: "gel-nails", description: "Long-lasting gel polish that cures under UV light. Keeps nails shiny and chip-free for up to 3 weeks." },
@@ -80,4 +81,83 @@ export const mockBackend: any = {
     createdAt: BigInt(Date.now()),
   }),
   updateService: async () => true,
+
+  // Booking methods (cast — not yet in bindgen schema)
+  submitBooking: async (req: {
+    techId: string;
+    serviceType: string;
+    requestedDate: string;
+    requestedTime: string;
+    customerName: string;
+    customerPhone: string;
+    notes?: string;
+  }): Promise<BookingView> => ({
+    id: `booking-${Date.now()}`,
+    techId: req.techId,
+    techName: req.techId === "florah" ? "Florah" : req.techId === "christy" ? "Christy" : "Jack",
+    serviceType: req.serviceType,
+    requestedDate: req.requestedDate,
+    requestedTime: req.requestedTime,
+    customerName: req.customerName,
+    customerPhone: req.customerPhone,
+    notes: req.notes,
+    status: "Pending",
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  }),
+  listBookings: async (statusFilter?: string): Promise<BookingView[]> => {
+    const all: BookingView[] = [
+      {
+        id: "bk-001",
+        techId: "florah",
+        techName: "Florah",
+        serviceType: "Acrylic",
+        requestedDate: "2026-04-25",
+        requestedTime: "10:00",
+        customerName: "Nomsa Dlamini",
+        customerPhone: "+27 81 234 5678",
+        notes: "Would love a floral design",
+        status: "Pending",
+        createdAt: Date.now() - 3600000,
+        updatedAt: Date.now() - 3600000,
+      },
+      {
+        id: "bk-002",
+        techId: "christy",
+        techName: "Christy",
+        serviceType: "Gel",
+        requestedDate: "2026-04-26",
+        requestedTime: "14:00",
+        confirmedDate: "2026-04-26",
+        confirmedTime: "14:30",
+        customerName: "Thandi Mokoena",
+        customerPhone: "+27 72 987 6543",
+        status: "Confirmed",
+        adminNotes: "See you at 2:30pm!",
+        createdAt: Date.now() - 86400000,
+        updatedAt: Date.now() - 3600000,
+      },
+      {
+        id: "bk-003",
+        techId: "jack",
+        techName: "Jack",
+        serviceType: "Rubber Base Gel",
+        requestedDate: "2026-04-20",
+        requestedTime: "11:00",
+        customerName: "Lerato Sithole",
+        customerPhone: "+27 63 111 2233",
+        status: "Cancelled",
+        cancellationReason: "Tech unavailable on that date",
+        createdAt: Date.now() - 172800000,
+        updatedAt: Date.now() - 86400000,
+      },
+    ];
+    if (!statusFilter || statusFilter === "All") return all;
+    return all.filter((b) => b.status === statusFilter);
+  },
+  getBooking: async (bookingId: string): Promise<BookingView | null> => null,
+  confirmBooking: async (bookingId: string, adminNotes?: string): Promise<BookingView | null> => null,
+  rescheduleBooking: async (req: { bookingId: string; newDate: string; newTime: string; adminNotes?: string }): Promise<BookingView | null> => null,
+  cancelBooking: async (bookingId: string, reason?: string): Promise<BookingView | null> => null,
+  completeBooking: async (bookingId: string, adminNotes?: string): Promise<BookingView | null> => null,
 };

@@ -1,8 +1,10 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useInternetIdentity } from "@caffeineai/core-infrastructure";
 import {
+  CalendarCheck,
   Image,
   LogIn,
   LogOut,
@@ -11,15 +13,21 @@ import {
   Scissors,
   ShieldCheck,
 } from "lucide-react";
+import { AdminBookingsTab } from "../components/admin/AdminBookingsTab";
 import { AdminContactTab } from "../components/admin/AdminContactTab";
 import { AdminGalleryTab } from "../components/admin/AdminGalleryTab";
 import { AdminMessagesTab } from "../components/admin/AdminMessagesTab";
 import { AdminServicesTab } from "../components/admin/AdminServicesTab";
+import { useListBookings } from "../hooks/useBookings";
 import { useIsAdmin } from "../hooks/useContactInfo";
 
 export default function Admin() {
   const { loginStatus, login, clear } = useInternetIdentity();
   const { data: isAdmin, isLoading: adminLoading } = useIsAdmin();
+  const { data: allBookings } = useListBookings();
+  const pendingCount = (allBookings ?? []).filter(
+    (b) => b.status === "Pending",
+  ).length;
 
   const isAuthenticated = loginStatus === "success";
 
@@ -111,14 +119,28 @@ export default function Admin() {
       </div>
 
       {/* Tabs */}
-      <Tabs defaultValue="services" className="w-full">
+      <Tabs defaultValue="bookings" className="w-full">
         <TabsList
           data-ocid="admin-tabs"
-          className="w-full grid grid-cols-2 sm:grid-cols-4 h-auto gap-1 bg-muted p-1 rounded-xl"
+          className="w-full grid grid-cols-3 sm:grid-cols-5 h-auto gap-1 bg-muted p-1 rounded-xl"
         >
+          <TabsTrigger
+            value="bookings"
+            className="gap-2 py-2.5 rounded-lg text-sm font-body relative"
+            data-ocid="admin-tab.bookings"
+          >
+            <CalendarCheck className="w-4 h-4" />
+            <span>Bookings</span>
+            {pendingCount > 0 && (
+              <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] font-body rounded-full bg-amber-500 text-white border-0">
+                {pendingCount}
+              </Badge>
+            )}
+          </TabsTrigger>
           <TabsTrigger
             value="services"
             className="gap-2 py-2.5 rounded-lg text-sm font-body"
+            data-ocid="admin-tab.services"
           >
             <Scissors className="w-4 h-4" />
             <span>Services</span>
@@ -126,6 +148,7 @@ export default function Admin() {
           <TabsTrigger
             value="gallery"
             className="gap-2 py-2.5 rounded-lg text-sm font-body"
+            data-ocid="admin-tab.gallery"
           >
             <Image className="w-4 h-4" />
             <span>Gallery</span>
@@ -133,19 +156,24 @@ export default function Admin() {
           <TabsTrigger
             value="contact"
             className="gap-2 py-2.5 rounded-lg text-sm font-body"
+            data-ocid="admin-tab.contact"
           >
             <Phone className="w-4 h-4" />
-            <span>Contact Info</span>
+            <span>Contact</span>
           </TabsTrigger>
           <TabsTrigger
             value="messages"
             className="gap-2 py-2.5 rounded-lg text-sm font-body"
+            data-ocid="admin-tab.messages"
           >
             <MessageSquare className="w-4 h-4" />
             <span>Messages</span>
           </TabsTrigger>
         </TabsList>
 
+        <TabsContent value="bookings" className="mt-6">
+          <AdminBookingsTab />
+        </TabsContent>
         <TabsContent value="services" className="mt-6">
           <AdminServicesTab />
         </TabsContent>

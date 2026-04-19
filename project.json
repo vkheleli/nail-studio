@@ -1,21 +1,20 @@
 {
-  "overview": "A professional nail tech portfolio website with nail service type showcase, image gallery with upload capability, and contact information — all beautifully designed with a modern salon aesthetic.",
+  "overview": "Majestic Beauty & Nails Bar is a professional SaaS-style website for a nails and eyelash business featuring 3 nail technicians across 3 locations. Users can browse nail tech profiles, view portfolios, book appointments with date/time selection, and contact the business. Admins manage all bookings, gallery, services, and tech profiles.",
   "features": [
-    "Nail service type showcase with category filtering",
-    "Portfolio image gallery with lightbox view",
-    "Image upload with object storage",
-    "Contact information and inquiry form",
-    "Admin dashboard protected by Internet Identity login",
-    "Mobile-responsive professional salon design"
+    "Browse all 3 nail techs on one page with specialties and locations",
+    "Booking system with date/time picker — admin confirms or reschedules",
+    "Admin panel for managing bookings, gallery, services, and content",
+    "Filterable image gallery with lightbox",
+    "Mobile-responsive salon-inspired design"
   ],
-  "category": "portfolio",
+  "category": "business",
   "tags": [
-    "nail-tech",
     "beauty",
-    "portfolio",
-    "gallery",
+    "nails",
+    "booking",
     "salon",
-    "contact"
+    "appointments",
+    "admin"
   ],
-  "last_updated": "2026-04-12T13:55:40.135Z"
+  "last_updated": "2026-04-19T07:39:01.987Z"
 }
