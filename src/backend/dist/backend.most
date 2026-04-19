@@ -1,0 +1,83 @@
+// Version: 1.0.0
+type ContactInfo__323631635 =
+  {
+    address : Text;
+    bookingUrl : Text;
+    email : Text;
+    hours : Text;
+    phone : Text
+  };
+type ContactMessage__84138439 =
+  {
+    createdAt : Timestamp__301639476;
+    email : Text;
+    id : MessageId__291319400;
+    message : Text;
+    name : Text;
+    preferredService : Text
+  };
+type Data__791452850<K, V> =
+  {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type ExternalBlob__246066408 = Blob;
+type ImageId__216201135 = Nat;
+type Internal__8484328<K, V> =
+  {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
+type Map__158565046<K, V> = Map__297112838<K, V>;
+type Map__297112838<K, V> =
+  {var root : Node__46230540<K, V>; var size : Nat__490723111};
+type Map__605269027<K, V> = Map__158565046<K, V>;
+type MessageId__291319400 = Nat;
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type Node__46230540<K, V> =
+  {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
+type PortfolioImage__808336274 =
+  {
+    createdAt : Timestamp__301639476;
+    id : ImageId__216201135;
+    image : ExternalBlob__246066408;
+    serviceTypeId : ServiceTypeId__181376452;
+    title : Text
+  };
+type ServiceTypeId__181376452 = Nat;
+type ServiceType__390865354 =
+  {
+    description : Text;
+    id : ServiceTypeId__181376452;
+    name : Text;
+    slug : Text
+  };
+type Timestamp__301639476 = Int;
+type UserRole__1054455867 = {#admin; #guest; #user};
+actor {
+  stable accessControlState :
+    {
+      var adminAssigned : Bool;
+      userRoles : Map__605269027<Principal, UserRole__1054455867>
+    };
+  stable contactInfoHolder :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?ContactInfo__323631635]];
+      var elementIndex : Nat__490723111
+    };
+  stable contactMessages :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?ContactMessage__84138439]];
+      var elementIndex : Nat__490723111
+    };
+  stable images :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?PortfolioImage__808336274]];
+      var elementIndex : Nat__490723111
+    };
+  stable serviceTypes :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?ServiceType__390865354]];
+      var elementIndex : Nat__490723111
+    }
+};

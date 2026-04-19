@@ -1,0 +1,21 @@
+{
+  "overview": "A professional nail tech portfolio website with nail service type showcase, image gallery with upload capability, and contact information — all beautifully designed with a modern salon aesthetic.",
+  "features": [
+    "Nail service type showcase with category filtering",
+    "Portfolio image gallery with lightbox view",
+    "Image upload with object storage",
+    "Contact information and inquiry form",
+    "Admin dashboard protected by Internet Identity login",
+    "Mobile-responsive professional salon design"
+  ],
+  "category": "portfolio",
+  "tags": [
+    "nail-tech",
+    "beauty",
+    "portfolio",
+    "gallery",
+    "salon",
+    "contact"
+  ],
+  "last_updated": "2026-04-12T13:55:40.135Z"
+}

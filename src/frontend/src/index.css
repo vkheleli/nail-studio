@@ -1,0 +1,185 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-display: "Fraunces", serif;
+    --font-body: "DM Sans", sans-serif;
+    --font-mono: "Geist Mono", monospace;
+    --radius: 0.625rem;
+
+    --background: 0.98 0.02 276;
+    --foreground: 0.2 0.02 354;
+    --card: 0.99 0.01 82;
+    --card-foreground: 0.18 0.03 354;
+    --popover: 0.99 0.01 82;
+    --popover-foreground: 0.18 0.03 354;
+
+    --primary: 0.49 0.22 354;
+    --primary-foreground: 0.98 0.01 0;
+
+    --secondary: 0.92 0.04 82;
+    --secondary-foreground: 0.35 0.08 28;
+    --muted: 0.88 0.03 82;
+    --muted-foreground: 0.45 0.06 28;
+
+    --accent: 0.62 0.16 28;
+    --accent-foreground: 0.98 0.01 0;
+
+    --destructive: 0.55 0.22 25;
+    --destructive-foreground: 0.98 0.01 0;
+
+    --border: 0.92 0.03 82;
+    --input: 0.94 0.02 82;
+    --ring: 0.49 0.22 354;
+
+    --chart-1: 0.62 0.16 28;
+    --chart-2: 0.49 0.22 354;
+    --chart-3: 0.72 0.12 180;
+    --chart-4: 0.58 0.14 65;
+    --chart-5: 0.65 0.18 40;
+
+    --sidebar: 0.97 0.02 82;
+    --sidebar-foreground: 0.2 0.02 354;
+    --sidebar-primary: 0.49 0.22 354;
+    --sidebar-primary-foreground: 0.98 0.01 0;
+    --sidebar-accent: 0.88 0.03 82;
+    --sidebar-accent-foreground: 0.35 0.08 28;
+    --sidebar-border: 0.92 0.03 82;
+    --sidebar-ring: 0.49 0.22 354;
+  }
+
+  .dark {
+    --background: 0.12 0.01 354;
+    --foreground: 0.94 0.02 82;
+    --card: 0.16 0.01 354;
+    --card-foreground: 0.92 0.02 82;
+    --popover: 0.19 0.02 354;
+    --popover-foreground: 0.92 0.02 82;
+
+    --primary: 0.72 0.18 354;
+    --primary-foreground: 0.12 0.01 354;
+
+    --secondary: 0.2 0.02 354;
+    --secondary-foreground: 0.85 0.04 82;
+    --muted: 0.22 0.02 354;
+    --muted-foreground: 0.55 0.04 82;
+
+    --accent: 0.75 0.14 28;
+    --accent-foreground: 0.12 0.01 354;
+
+    --destructive: 0.65 0.19 22;
+    --destructive-foreground: 0.12 0.01 354;
+
+    --border: 0.24 0.01 354;
+    --input: 0.24 0.01 354;
+    --ring: 0.72 0.18 354;
+
+    --chart-1: 0.75 0.14 28;
+    --chart-2: 0.72 0.18 354;
+    --chart-3: 0.64 0.12 180;
+    --chart-4: 0.68 0.14 65;
+    --chart-5: 0.7 0.16 40;
+
+    --sidebar: 0.15 0.01 354;
+    --sidebar-foreground: 0.92 0.02 82;
+    --sidebar-primary: 0.72 0.18 354;
+    --sidebar-primary-foreground: 0.12 0.01 354;
+    --sidebar-accent: 0.22 0.02 354;
+    --sidebar-accent-foreground: 0.85 0.04 82;
+    --sidebar-border: 0.24 0.01 354;
+    --sidebar-ring: 0.72 0.18 354;
+  }
+
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+}
+
+@font-face {
+  font-family: "Fraunces";
+  src: url("/assets/fonts/Fraunces.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DM Sans";
+  src: url("/assets/fonts/DMSans.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("/assets/fonts/GeistMono.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@layer utilities {
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .shimmer-accent {
+    background: linear-gradient(
+      135deg,
+      oklch(var(--accent)) 0%,
+      oklch(var(--accent) / 0.7) 50%,
+      oklch(var(--accent)) 100%
+    );
+    background-size: 200% 200%;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  .surface-elevated {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  }
+
+  .surface-card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .font-body {
+    font-family: var(--font-body);
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+
+  .shadow-subtle {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .gallery-grid {
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+  }
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    background-position: 200% 200%;
+  }
+  50% {
+    background-position: 0% 0%;
+  }
+}

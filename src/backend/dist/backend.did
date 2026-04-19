@@ -1,0 +1,89 @@
+type _ImmutableObjectStorageRefillResult = 
+ record {
+   success: opt bool;
+   topped_up_amount: opt nat;
+ };
+type _ImmutableObjectStorageRefillInformation = record {
+                                                  proposed_top_up_amount:
+                                                   opt nat;};
+type _ImmutableObjectStorageCreateCertificateResult = 
+ record {
+   blob_hash: text;
+   method: text;
+ };
+type UserRole = 
+ variant {
+   admin;
+   guest;
+   user;
+ };
+type Timestamp = int;
+type ServiceTypeId = nat;
+type ServiceType = 
+ record {
+   description: text;
+   id: ServiceTypeId;
+   name: text;
+   slug: text;
+ };
+type PortfolioImage = 
+ record {
+   createdAt: Timestamp;
+   id: ImageId;
+   image: ExternalBlob;
+   serviceTypeId: ServiceTypeId;
+   title: text;
+ };
+type MessageId = nat;
+type ImageId = nat;
+type ExternalBlob = blob;
+type ContactMessage = 
+ record {
+   createdAt: Timestamp;
+   email: text;
+   id: MessageId;
+   message: text;
+   name: text;
+   preferredService: text;
+ };
+type ContactInfo = 
+ record {
+   address: text;
+   bookingUrl: text;
+   email: text;
+   hours: text;
+   phone: text;
+ };
+service : {
+  _immutableObjectStorageBlobsAreLive: (hashes: vec blob) -> (vec bool) query;
+  _immutableObjectStorageBlobsToDelete: () -> (vec blob) query;
+  _immutableObjectStorageConfirmBlobDeletion: (blobs: vec blob) -> ();
+  _immutableObjectStorageCreateCertificate: (blobHash: text) ->
+   (_ImmutableObjectStorageCreateCertificateResult);
+  _immutableObjectStorageRefillCashier: (refillInformation:
+   opt _ImmutableObjectStorageRefillInformation) ->
+   (_ImmutableObjectStorageRefillResult);
+  _immutableObjectStorageUpdateGatewayPrincipals: () -> ();
+  _initializeAccessControl: () -> ();
+  addGalleryItem: (title: text, serviceTypeId: ServiceTypeId, image:
+   ExternalBlob) -> (PortfolioImage);
+  addService: (name: text, description: text, slug: text) -> (ServiceType);
+  assignCallerUserRole: (user: principal, role: UserRole) -> ();
+  deleteGalleryItem: (id: ImageId) -> (bool);
+  deleteService: (id: ServiceTypeId) -> (bool);
+  getCallerUserRole: () -> (UserRole) query;
+  getContactInfo: () -> (ContactInfo) query;
+  getGalleryItem: (id: ImageId) -> (opt PortfolioImage) query;
+  getService: (id: ServiceTypeId) -> (opt ServiceType) query;
+  isCallerAdmin: () -> (bool) query;
+  listContacts: () -> (vec ContactMessage);
+  listGalleryItems: () -> (vec PortfolioImage) query;
+  listGalleryItemsByService: (serviceTypeId: ServiceTypeId) ->
+   (vec PortfolioImage) query;
+  listServices: () -> (vec ServiceType) query;
+  setContactInfo: (info: ContactInfo) -> ();
+  submitContact: (name: text, email: text, message: text, preferredService:
+   text) -> (ContactMessage);
+  updateService: (id: ServiceTypeId, name: text, description: text, slug:
+   text) -> (bool);
+}
